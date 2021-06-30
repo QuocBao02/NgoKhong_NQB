@@ -5,8 +5,10 @@ pygame.init()
 
 
 score = 0 
+highest_score = 0
+volume = 1
 screen = pygame.display.set_mode((1200, 720))
-pygame.display.set_caption("Ngộ Không Cứu Ta_NQB.")
+pygame.display.set_caption("Tây Du Ký_NQB.")
 clock = pygame.time.Clock()
 White = (255,255,255)
 
@@ -37,6 +39,8 @@ kiemduoi = pygame.image.load("kiemduoi.png")
 font_score = pygame.font.SysFont("Corel", 35)
 font_gameover = pygame.font.SysFont("Corel", 100)
 font_runagain = pygame.font.SysFont("Corel", 35)
+# tao font highest score
+font_highest_score = pygame.font.SysFont("Corel", 35)
 # tao font end game
 font_end = pygame.font.SysFont("Corel", 100)
 # toa do button play
@@ -156,7 +160,8 @@ while running:
 				score += 1
 			if (x_nk >= x_og6 + og_width and check_6 == False):
 				check_6 = True 
-				score += 1	
+				score += 1
+			
 			# kiem tra va cham 
 			Arr = [ongtren_1_rect,ongtren_2_rect,ongtren_3_rect,ongtren_4_rect,ongtren_5_rect,ongtren_6_rect,
 				   ongduoi_1_rect, ongduoi_2_rect,ongduoi_3_rect,ongduoi_4_rect,ongduoi_5_rect,ongduoi_6_rect,]
@@ -400,10 +405,11 @@ while running:
 			og_velocity = 0
 			nk_drop_velocity = 0
 
-
+	if score > highest_score:
+		highest_score = score
 	# tăng độ khó game
 	if score > 0 and score % 30 ==0   :
-		og_velocity +=0.015
+		og_velocity +=0.02
 	# tang level 2
 	if score == 100:
 		level = 2
@@ -411,13 +417,20 @@ while running:
 		level = 3
 	if score == 350:
 		level = 4
+	# font highest score
+	if level != 0 and level != 4:
+		hg_score = font_highest_score.render("Highest Score: " + str(highest_score), True, (255,0,0))
+		hg_score = screen.blit(hg_score, (950, 0))
+	# cai dat am thanh
+	sound.set_volume(volume)
 	# sau khi va cham nhat space khoi tao lai level 1
 	for event in pygame.event.get():
 		if event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_SPACE:
 				nk_drop_velocity  = 0
 				nk_drop_velocity  -= 5
-				mixer.music.load("nhay.wav")
+				nhay = mixer.music.load("nhay.wav");
+				mixer.music.set_volume(volume)
 				mixer.music.play()
 				if pausing:
 					mixer.Sound.play(sound)
@@ -433,6 +446,16 @@ while running:
 					og_velocity = 5
 					y_nk = 435
 					level = 1
+			if event.key == pygame.K_p:
+				if volume == 1:
+					continue
+				else :
+					volume += 0.1
+			if event.key == pygame.K_s:
+				if volume == 0:
+					continue
+				else:
+					volume -= 0.1
 		# Kich Play de chay
 		if event.type == pygame.MOUSEBUTTONDOWN:
 			if x_pl < mouse[0] < x_pl + 300 and y_pl < mouse[1] < y_pl+175:
