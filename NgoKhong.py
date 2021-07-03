@@ -4,14 +4,15 @@ import random
 pygame.init()
 
 
-score = 0 
+score = 0
 highest_score = 0
-volume = 1
+volume = 0.3
 screen = pygame.display.set_mode((1200, 720))
 pygame.display.set_caption("Tây Du Ký_NQB.")
 clock = pygame.time.Clock()
 White = (255,255,255)
-
+tutorial = pygame.image.load("tutorial.png")
+tutorial = pygame.transform.scale(tutorial,(800, 480))
 background = pygame.image.load("background0.png")
 background = pygame.transform.scale(background,(1200, 720))
 play_ima = pygame.image.load("Play.png")
@@ -78,6 +79,7 @@ pausing = False
 sound = mixer.Sound("musicbackground.wav")
 # bien chay xuyen suot chuong trinh
 running = True
+temp = 0
 while running:
 	clock.tick(60)
 	mixer.Sound.play(sound)
@@ -91,9 +93,15 @@ while running:
 	check_6 = False
 	
 	if(level == 0):
+		# tao huong dan game
+
 		# tao backgground vao game
 		background_rect = screen.blit(background, (0, 0))
-		play_ima_rect = screen.blit(play_ima, (x_pl, y_pl))
+		tutorial_rect = screen.blit(tutorial, (200, 120))
+		if temp == 1:
+			background_rect = screen.blit(background, (0, 0))
+			play_ima_rect = screen.blit(play_ima, (x_pl, y_pl))
+		
 	else:
 	# Level 	
 		if level == 1:
@@ -446,6 +454,8 @@ while running:
 					og_velocity = 5
 					y_nk = 435
 					level = 1
+			if event.key == pygame.K_x:
+				temp = 1
 			if event.key == pygame.K_p:
 				if volume == 1:
 					continue
@@ -458,7 +468,7 @@ while running:
 					volume -= 0.1
 		# Kich Play de chay
 		if event.type == pygame.MOUSEBUTTONDOWN:
-			if x_pl < mouse[0] < x_pl + 300 and y_pl < mouse[1] < y_pl+175:
+			if x_pl < mouse[0] < x_pl + 300 and y_pl < mouse[1] < y_pl+175 and temp == 1:
 				level = 1
 		if event.type == pygame.QUIT:
 			running = False
